@@ -1,10 +1,10 @@
 {
-    "canciones_registradas":  {
-                                  "filename":  "",
-                                  "updated":  ""
-                              },
-    "mapa_similitud":  {
-                           "filename":  "",
-                           "updated":  ""
-                       }
+  "canciones_registradas": {
+    "filename": "canciones_registradas_23_08_2026.enc",
+    "updated": "2026-08-23"
+  },
+  "mapa_similitud": {
+    "filename": "",
+    "updated": ""
+  }
 }
