@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belhos Apps - Descargas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --border:#30363d; --primary:#58a6ff; --green:#3fb950; --text:#e6edf3; --muted:#8b949e; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; }
+  .logo { font-size:2.5rem; font-weight:800; letter-spacing:-1px; margin-bottom:0.25rem; }
+  .logo span { color:var(--primary); }
+  .subtitle { color:var(--muted); margin-bottom:3rem; font-size:1rem; }
+  .cards { display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center; max-width:720px; width:100%; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:2rem; flex:1; min-width:280px; max-width:320px; display:flex; flex-direction:column; gap:1rem; transition:border-color .2s; }
+  .card:hover { border-color:var(--primary); }
+  .card-icon { font-size:2.5rem; }
+  .card-title { font-size:1.25rem; font-weight:700; }
+  .card-desc { color:var(--muted); font-size:0.875rem; line-height:1.6; flex-grow:1; }
+  .version-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(63,185,80,0.1); border:1px solid rgba(63,185,80,0.3); color:var(--green); border-radius:20px; padding:3px 12px; font-size:0.8rem; font-weight:600; }
+  .btn-download { display:flex; align-items:center; justify-content:center; gap:8px; background:var(--primary); color:#0d1117; border:none; border-radius:10px; padding:0.85rem 1.5rem; font-size:1rem; font-weight:700; cursor:pointer; text-decoration:none; transition:opacity .2s; }
+  .btn-download:hover { opacity:.85; }
+  .btn-download.disabled { background:var(--border); color:var(--muted); cursor:not-allowed; pointer-events:none; }
+  .update-note { font-size:0.75rem; color:var(--muted); text-align:center; }
+  .footer { margin-top:3rem; color:var(--muted); font-size:0.8rem; text-align:center; }
+  .loading { opacity:.5; animation:pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+</style>
+</head>
+<body>
+<div class="logo">Bel<span>hos</span></div>
+<p class="subtitle">Descarga nuestras aplicaciones para Android</p>
+
+<div class="cards">
+  <div class="card">
+    <div class="card-icon">&#127925;</div>
+    <div class="card-title">Reproductor Belhos</div>
+    <div class="card-desc">El reproductor musical con identificacion automatica de canciones y sistema de votos.</div>
+    <div class="version-badge">
+      <span id="txt-ver-reproductor" class="loading">Cargando...</span>
+    </div>
+    <a href="#" id="btn-reproductor" class="btn-download disabled">Descargar APK</a>
+    <p class="update-note" id="msg-reproductor"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-icon">&#128269;</div>
+    <div class="card-title">Escaner de Canciones</div>
+    <div class="card-desc">Escanea y sube nuevas canciones para enriquecer la base de datos del sistema.</div>
+    <div class="version-badge">
+      <span id="txt-ver-scanner" class="loading">Cargando...</span>
+    </div>
+    <a href="#" id="btn-scanner" class="btn-download disabled">Descargar APK</a>
+    <p class="update-note" id="msg-scanner"></p>
+  </div>
+</div>
+
+<p class="footer">Archivos descargados directamente desde GitHub &copy; Belhos 2025</p>
+
+<script>
+var REPO_RAW = 'https://raw.githubusercontent.com/behlos634-alt/behlos-app-data/main/';
+function loadApp(jsonFile, btnId, verTxtId, msgId) {
+  fetch(REPO_RAW + jsonFile + '?nocache=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var verEl = document.getElementById(verTxtId);
+      var btnEl = document.getElementById(btnId);
+      var msgEl = document.getElementById(msgId);
+      verEl.textContent = 'v' + (d.latest_version || '?');
+      verEl.classList.remove('loading');
+      if (d.download_url) { btnEl.href = d.download_url; btnEl.classList.remove('disabled'); }
+      if (d.message) msgEl.textContent = d.message;
+    })
+    .catch(function(){
+      document.getElementById(verTxtId).textContent = 'No disponible';
+      document.getElementById(verTxtId).classList.remove('loading');
+    });
+}
+loadApp('app_version.json',     'btn-reproductor', 'txt-ver-reproductor', 'msg-reproductor');
+loadApp('scanner_version.json', 'btn-scanner',     'txt-ver-scanner',     'msg-scanner');
+</script>
+</body>
+</html>
